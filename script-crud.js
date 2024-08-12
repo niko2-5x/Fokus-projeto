@@ -58,23 +58,29 @@ function createTaskElement(task) {
   li.appendChild(taskContent);
   li.appendChild(editBtn);
 
-  li.onclick = () => {
-    document.querySelectorAll('.app__section-task-list-item-active')
-      .forEach(element => {
-        element.classList.remove('app__section-task-list-item-active');
-      });
-    if (selectedTask == task) {
-      pActiveTask.textContent = '';
-      selectedTask = null;
-      liSelectedTask = null;
-
-      return
+  if (task.completed) {
+    li.classList.add('app__section-task-list-item-complete');
+    editBtn.setAttribute('disabled', 'disabled');
+  } else {
+    li.onclick = () => {
+      document.querySelectorAll('.app__section-task-list-item-active')
+        .forEach(element => {
+          element.classList.remove('app__section-task-list-item-active');
+        });
+      if (selectedTask == task) {
+        pActiveTask.textContent = '';
+        selectedTask = null;
+        liSelectedTask = null;
+  
+        return
+      }
+      selectedTask = task;
+      liSelectedTask = li;
+      pActiveTask.textContent = task.descricao;
+      li.classList.add('app__section-task-list-item-active');
     }
-    selectedTask = task;
-    pActiveTask.textContent = task.descricao;
-    li.classList.add('app__section-task-list-item-active');
-    liSelectedTask = li;
   }
+
 
   return li;
 }
@@ -108,5 +114,8 @@ document.addEventListener('FocoFinalizado', () => {
     liSelectedTask.classList.remove('app__section-task-list-item-active');
     liSelectedTask.classList.add('app__section-task-list-item-complete');
     liSelectedTask.querySelector('button').setAttribute('disabled', 'disabled');
+    selectedTask.completed = true;
+    attTasks();
   }
 })
+
