@@ -80,6 +80,11 @@ const contagemRegressiva = () => {
   if (tempoDecorridoSegundos <= 0) {
     alarme.play();
     alert("Tempo finalizado!");
+    const focoActive = html.getAttribute('data-contexto') == 'foco';
+    if (focoActive) {
+      const evento = new CustomEvent('FocoFinalizado');
+      document.dispatchEvent(evento);
+    }
     zerar();
     return;
   }
@@ -110,7 +115,7 @@ function zerar() {
 
 function mostrarTempo() {
   const tempo = new Date(tempoDecorridoSegundos * 1000);
-  const tempoFortmatado = tempo.toLocaleTimeString("pt-br", {minute: "2-digit", second: "2-digit"});
+  const tempoFortmatado = tempo.toLocaleTimeString("pt-br", { minute: "2-digit", second: "2-digit" });
   appTimer.innerHTML = `${tempoFortmatado}`
 }
 

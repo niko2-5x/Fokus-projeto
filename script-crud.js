@@ -13,6 +13,7 @@ const cleanTaskForm = () => {
 }
 
 let selectedTask = null;
+let liSelectedTask = null;
 
 function attTasks() {
   localStorage.setItem('tasks', JSON.stringify(tasks));
@@ -65,12 +66,14 @@ function createTaskElement(task) {
     if (selectedTask == task) {
       pActiveTask.textContent = '';
       selectedTask = null;
+      liSelectedTask = null;
 
       return
     }
     selectedTask = task;
     pActiveTask.textContent = task.descricao;
     li.classList.add('app__section-task-list-item-active');
+    liSelectedTask = li;
   }
 
   return li;
@@ -99,3 +102,11 @@ tasks.forEach(task => {
 });
 
 cancelBtn.addEventListener('click', cleanTaskForm);
+
+document.addEventListener('FocoFinalizado', () => {
+  if (selectedTask && liSelectedTask) {
+    liSelectedTask.classList.remove('app__section-task-list-item-active');
+    liSelectedTask.classList.add('app__section-task-list-item-complete');
+    liSelectedTask.querySelector('button').setAttribute('disabled', 'disabled');
+  }
+})
