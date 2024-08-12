@@ -2,11 +2,20 @@ const btnAddTask = document.querySelector('.app__button--add-task');
 const formAddTask = document.querySelector('.app__form-add-task');
 const newTaskText = document.querySelector('.app__form-textarea');
 const ulTasks = document.querySelector('.app__section-task-list');
+const cancelBtn = document.querySelector('.app__form-footer__button--cancel');
 
 const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
 
-function createTaskElement(task) {
+const cleanTaskForm = () => {
+  newTaskText.value = '';
+  formAddTask.classList.add('hidden');
+}
 
+function attTasks () {
+  localStorage.setItem('tasks', JSON.stringify(tasks));
+}
+
+function createTaskElement(task) {
   const li = document.createElement('li');
   li.classList.add('app__section-task-list-item');
 
@@ -19,15 +28,23 @@ function createTaskElement(task) {
   `;
 
   const taskContent = document.createElement('p');
-  taskContent.classList.add('app__section-task-list-item-description');
   taskContent.textContent = task.descricao;
+  taskContent.classList.add('app__section-task-list-item-description');
 
   const editBtn = document.createElement('button');
   editBtn.classList.add('app_button-edit');
-
+  
   editBtn.onclick = () => {
     const newContent = prompt('Qual o novo conteúdo da tarefa?');
-    taskContent.textContent = newContent;
+    console.log('Novo conteúdo da tarefa: ', newContent)
+    if (newContent === null) {
+      return;
+    }
+    if (newContent) {
+      taskContent.textContent = newContent;
+      task.descricao = newContent;
+      attTasks();
+    }
   }
 
   const imgEditBtn = document.createElement('img');
@@ -53,7 +70,7 @@ formAddTask.addEventListener('submit', (evento) => {
   tasks.push(task);
   const elementTask = createTaskElement(task);
   ulTasks.appendChild(elementTask);
-  localStorage.setItem('tasks', JSON.stringify(tasks));
+  attTasks();
   newTaskText.value = '';
   formAddTask.classList.add('hidden');
 })
@@ -62,3 +79,5 @@ tasks.forEach(task => {
   const elementTask = createTaskElement(task);
   ulTasks.appendChild(elementTask);
 });
+
+cancelBtn.addEventListener('click', cleanTaskForm);
