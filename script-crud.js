@@ -3,6 +3,7 @@ const formAddTask = document.querySelector('.app__form-add-task');
 const newTaskText = document.querySelector('.app__form-textarea');
 const ulTasks = document.querySelector('.app__section-task-list');
 const cancelBtn = document.querySelector('.app__form-footer__button--cancel');
+const pActiveTask = document.querySelector('.app__section-active-task-description');
 
 const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
 
@@ -11,7 +12,9 @@ const cleanTaskForm = () => {
   formAddTask.classList.add('hidden');
 }
 
-function attTasks () {
+let selectedTask = null;
+
+function attTasks() {
   localStorage.setItem('tasks', JSON.stringify(tasks));
 }
 
@@ -33,10 +36,9 @@ function createTaskElement(task) {
 
   const editBtn = document.createElement('button');
   editBtn.classList.add('app_button-edit');
-  
+
   editBtn.onclick = () => {
     const newContent = prompt('Qual o novo conteúdo da tarefa?');
-    console.log('Novo conteúdo da tarefa: ', newContent)
     if (newContent === null) {
       return;
     }
@@ -54,6 +56,22 @@ function createTaskElement(task) {
   li.appendChild(svg);
   li.appendChild(taskContent);
   li.appendChild(editBtn);
+
+  li.onclick = () => {
+    document.querySelectorAll('.app__section-task-list-item-active')
+      .forEach(element => {
+        element.classList.remove('app__section-task-list-item-active');
+      });
+    if (selectedTask == task) {
+      pActiveTask.textContent = '';
+      selectedTask = null;
+
+      return
+    }
+    selectedTask = task;
+    pActiveTask.textContent = task.descricao;
+    li.classList.add('app__section-task-list-item-active');
+  }
 
   return li;
 }
