@@ -4,14 +4,15 @@ const newTaskText = document.querySelector('.app__form-textarea');
 const ulTasks = document.querySelector('.app__section-task-list');
 const cancelBtn = document.querySelector('.app__form-footer__button--cancel');
 const pActiveTask = document.querySelector('.app__section-active-task-description');
-
-const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+const btnRemoverConcluidas = document.querySelector('#btn-remover-concluidas');
+const btnRemoverTodas = document.querySelector('#btn-remover-todas');
 
 const cleanTaskForm = () => {
   newTaskText.value = '';
   formAddTask.classList.add('hidden');
 }
 
+let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
 let selectedTask = null;
 let liSelectedTask = null;
 
@@ -71,7 +72,7 @@ function createTaskElement(task) {
         pActiveTask.textContent = '';
         selectedTask = null;
         liSelectedTask = null;
-  
+
         return
       }
       selectedTask = task;
@@ -80,8 +81,6 @@ function createTaskElement(task) {
       li.classList.add('app__section-task-list-item-active');
     }
   }
-
-
   return li;
 }
 
@@ -119,3 +118,18 @@ document.addEventListener('FocoFinalizado', () => {
   }
 })
 
+const removerTasks = (somenteCompletas) => {
+  let seletor = '.app__section-task-list-item';
+  if (somenteCompletas) {
+    somente = '.app__section-task-list-item-complete';
+  }
+  document.querySelectorAll(seletor)
+    .forEach(elemento => {
+      elemento.remove();
+    })
+  tasks = somenteCompletas ? tasks.filter(elemnto => !task.completed) : [];
+  attTasks();
+}
+
+btnRemoverConcluidas.onclick = () => removerTasks(true);
+btnRemoverTodas.onclick = () => removerTasks(false);
